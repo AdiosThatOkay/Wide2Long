@@ -47,6 +47,10 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.TB_NewValueName = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.btnSkip = new System.Windows.Forms.Button();
+            this.LB_SheetName = new System.Windows.Forms.Label();
+            this.LB_SheetNum = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.NUD_HeaderRow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUD_StartRow)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUD_EndRow)).BeginInit();
@@ -56,7 +60,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(12, 14);
+            this.label1.Location = new System.Drawing.Point(12, 21);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(133, 20);
             this.label1.TabIndex = 0;
@@ -65,7 +69,7 @@
             // TB_FilePath
             // 
             this.TB_FilePath.Font = new System.Drawing.Font("メイリオ", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.TB_FilePath.Location = new System.Drawing.Point(150, 13);
+            this.TB_FilePath.Location = new System.Drawing.Point(150, 20);
             this.TB_FilePath.Name = "TB_FilePath";
             this.TB_FilePath.ReadOnly = true;
             this.TB_FilePath.Size = new System.Drawing.Size(230, 24);
@@ -75,7 +79,7 @@
             // btnOpenDialog
             // 
             this.btnOpenDialog.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.btnOpenDialog.Location = new System.Drawing.Point(386, 10);
+            this.btnOpenDialog.Location = new System.Drawing.Point(386, 17);
             this.btnOpenDialog.Name = "btnOpenDialog";
             this.btnOpenDialog.Size = new System.Drawing.Size(63, 29);
             this.btnOpenDialog.TabIndex = 2;
@@ -85,19 +89,20 @@
             // 
             // btnLoad
             // 
+            this.btnLoad.Enabled = false;
             this.btnLoad.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.btnLoad.Location = new System.Drawing.Point(171, 47);
+            this.btnLoad.Location = new System.Drawing.Point(171, 153);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(103, 29);
-            this.btnLoad.TabIndex = 4;
-            this.btnLoad.Text = "読込開始";
+            this.btnLoad.TabIndex = 5;
+            this.btnLoad.Text = "列名読込";
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
             // btnExit
             // 
             this.btnExit.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.btnExit.Location = new System.Drawing.Point(346, 521);
+            this.btnExit.Location = new System.Drawing.Point(345, 645);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(103, 29);
             this.btnExit.TabIndex = 12;
@@ -109,7 +114,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label2.Location = new System.Drawing.Point(12, 49);
+            this.label2.Location = new System.Drawing.Point(12, 155);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(61, 20);
             this.label2.TabIndex = 5;
@@ -119,7 +124,7 @@
             // 
             this.NUD_HeaderRow.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.NUD_HeaderRow.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.NUD_HeaderRow.Location = new System.Drawing.Point(79, 47);
+            this.NUD_HeaderRow.Location = new System.Drawing.Point(79, 153);
             this.NUD_HeaderRow.Maximum = new decimal(new int[] {
             1048576,
             0,
@@ -132,7 +137,7 @@
             0});
             this.NUD_HeaderRow.Name = "NUD_HeaderRow";
             this.NUD_HeaderRow.Size = new System.Drawing.Size(72, 27);
-            this.NUD_HeaderRow.TabIndex = 3;
+            this.NUD_HeaderRow.TabIndex = 4;
             this.NUD_HeaderRow.Value = new decimal(new int[] {
             1,
             0,
@@ -145,7 +150,7 @@
             // 
             this.btnConvert.Enabled = false;
             this.btnConvert.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.btnConvert.Location = new System.Drawing.Point(222, 521);
+            this.btnConvert.Location = new System.Drawing.Point(221, 645);
             this.btnConvert.Name = "btnConvert";
             this.btnConvert.Size = new System.Drawing.Size(103, 29);
             this.btnConvert.TabIndex = 11;
@@ -157,7 +162,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label3.Location = new System.Drawing.Point(12, 83);
+            this.label3.Location = new System.Drawing.Point(13, 194);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(139, 20);
             this.label3.TabIndex = 9;
@@ -167,7 +172,7 @@
             // 
             this.NUD_StartRow.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.NUD_StartRow.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.NUD_StartRow.Location = new System.Drawing.Point(66, 490);
+            this.NUD_StartRow.Location = new System.Drawing.Point(65, 610);
             this.NUD_StartRow.Maximum = new decimal(new int[] {
             1048576,
             0,
@@ -193,7 +198,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label4.Location = new System.Drawing.Point(12, 492);
+            this.label4.Location = new System.Drawing.Point(11, 612);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(48, 20);
             this.label4.TabIndex = 10;
@@ -203,7 +208,7 @@
             // 
             this.NUD_EndRow.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.NUD_EndRow.ImeMode = System.Windows.Forms.ImeMode.Disable;
-            this.NUD_EndRow.Location = new System.Drawing.Point(66, 523);
+            this.NUD_EndRow.Location = new System.Drawing.Point(65, 647);
             this.NUD_EndRow.Maximum = new decimal(new int[] {
             1048576,
             0,
@@ -229,7 +234,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label5.Location = new System.Drawing.Point(12, 525);
+            this.label5.Location = new System.Drawing.Point(11, 649);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(48, 20);
             this.label5.TabIndex = 12;
@@ -239,7 +244,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label6.Location = new System.Drawing.Point(12, 411);
+            this.label6.Location = new System.Drawing.Point(11, 531);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(74, 20);
             this.label6.TabIndex = 13;
@@ -248,27 +253,27 @@
             // TB_NewKeyName
             // 
             this.TB_NewKeyName.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.TB_NewKeyName.Location = new System.Drawing.Point(64, 438);
+            this.TB_NewKeyName.Location = new System.Drawing.Point(63, 558);
             this.TB_NewKeyName.Name = "TB_NewKeyName";
             this.TB_NewKeyName.Size = new System.Drawing.Size(120, 27);
-            this.TB_NewKeyName.TabIndex = 6;
+            this.TB_NewKeyName.TabIndex = 7;
             // 
             // LB_Columns
             // 
             this.LB_Columns.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.LB_Columns.FormattingEnabled = true;
             this.LB_Columns.ItemHeight = 18;
-            this.LB_Columns.Location = new System.Drawing.Point(15, 107);
+            this.LB_Columns.Location = new System.Drawing.Point(17, 220);
             this.LB_Columns.Name = "LB_Columns";
             this.LB_Columns.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.LB_Columns.Size = new System.Drawing.Size(434, 292);
-            this.LB_Columns.TabIndex = 5;
+            this.LB_Columns.TabIndex = 6;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label7.Location = new System.Drawing.Point(202, 441);
+            this.label7.Location = new System.Drawing.Point(201, 561);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(22, 20);
             this.label7.TabIndex = 15;
@@ -278,7 +283,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label8.Location = new System.Drawing.Point(25, 441);
+            this.label8.Location = new System.Drawing.Point(24, 561);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(35, 20);
             this.label8.TabIndex = 17;
@@ -287,16 +292,61 @@
             // TB_NewValueName
             // 
             this.TB_NewValueName.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.TB_NewValueName.Location = new System.Drawing.Point(230, 438);
+            this.TB_NewValueName.Location = new System.Drawing.Point(229, 558);
             this.TB_NewValueName.Name = "TB_NewValueName";
             this.TB_NewValueName.Size = new System.Drawing.Size(120, 27);
-            this.TB_NewValueName.TabIndex = 7;
+            this.TB_NewValueName.TabIndex = 8;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label9.Location = new System.Drawing.Point(12, 79);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(113, 20);
+            this.label9.TabIndex = 18;
+            this.label9.Text = "処理対象のシート";
+            // 
+            // btnSkip
+            // 
+            this.btnSkip.Enabled = false;
+            this.btnSkip.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnSkip.Location = new System.Drawing.Point(302, 104);
+            this.btnSkip.Name = "btnSkip";
+            this.btnSkip.Size = new System.Drawing.Size(146, 29);
+            this.btnSkip.TabIndex = 3;
+            this.btnSkip.Text = "このシートをスキップ";
+            this.btnSkip.UseVisualStyleBackColor = true;
+            // 
+            // LB_SheetName
+            // 
+            this.LB_SheetName.AutoSize = true;
+            this.LB_SheetName.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LB_SheetName.Location = new System.Drawing.Point(24, 108);
+            this.LB_SheetName.Name = "LB_SheetName";
+            this.LB_SheetName.Size = new System.Drawing.Size(67, 20);
+            this.LB_SheetName.TabIndex = 19;
+            this.LB_SheetName.Text = "シート名:";
+            // 
+            // LB_SheetNum
+            // 
+            this.LB_SheetNum.AutoSize = true;
+            this.LB_SheetNum.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LB_SheetNum.Location = new System.Drawing.Point(146, 79);
+            this.LB_SheetNum.Name = "LB_SheetNum";
+            this.LB_SheetNum.Size = new System.Drawing.Size(100, 20);
+            this.LB_SheetNum.TabIndex = 20;
+            this.LB_SheetNum.Text = "LB_SheetNum";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(467, 558);
+            this.ClientSize = new System.Drawing.Size(467, 695);
+            this.Controls.Add(this.LB_SheetNum);
+            this.Controls.Add(this.LB_SheetName);
+            this.Controls.Add(this.btnSkip);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.TB_NewValueName);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
@@ -349,6 +399,10 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox TB_NewValueName;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button btnSkip;
+        private System.Windows.Forms.Label LB_SheetName;
+        private System.Windows.Forms.Label LB_SheetNum;
     }
 }
 

@@ -17,15 +17,20 @@ namespace Wide2Long
 {
     public partial class Form1 : Form
     {
+        private IWorkbook srcWorkbook;
+        private int sheetIndex;
+
         public Form1()
         {
             InitializeComponent();
+            LB_SheetNum.Text = "";
         }
 
         private void btnOpenDialog_Click(object sender, EventArgs e)
         {
             var filePath = string.Empty;
 
+            // ファイルを開くダイアログを表示
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
@@ -39,6 +44,29 @@ namespace Wide2Long
                     TB_FilePath.Text = filePath;
                 }
             }
+
+            // 待機カーソルに変更
+            Cursor.Current = Cursors.WaitCursor;
+
+            // 各コントロールを初期化
+            initializeControl();
+
+            // Excelブックを読み込む
+            // 排他ロックせずに読み取り専用で開く
+            //var fs = new FileStream(TB_FilePath.Text, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using (var fs = File.OpenRead(TB_FilePath.Text))
+            {
+                this.srcWorkbook = WorkbookFactory.Create(fs);
+                this.sheetIndex = 0;
+            }
+
+            // 最初のシートを取得して、情報をラベルに表示
+            updateLabelSheetNum();
+            updateLabelSheetName();
+
+            // スキップボタンと列名読込ボタンを有効化
+            btnSkip.Enabled = true;
+            btnLoad.Enabled = true;
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -51,45 +79,32 @@ namespace Wide2Long
             try
             {
                 // バリデーション
-                if (TB_FilePath.Text == "")
-                {
-                    MessageBox.Show("Excelファイルを指定してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
                 if (NUD_HeaderRow.Value < 1)
                 {
                     MessageBox.Show("ヘッダ行を正しく指定してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                // 待機カーソルに変更
-                Cursor.Current = Cursors.WaitCursor;
-
-                LB_Columns.Items.Clear();
-
-                // 排他ロックせずに読み取り専用で開く
-                var fs = new FileStream(TB_FilePath.Text, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-                // Excelブックを読み込む
-                IWorkbook workbook = WorkbookFactory.Create(fs);
-
-                // 1シート目を取得
-                var sheet = workbook?.GetSheetAt(0);
+                // 処理対象のシート取得
+                ISheet sheet = this.srcWorkbook.GetSheetAt(this.sheetIndex);
                 
-                // ヘッダ行の項目をcheckedListBoxに追加
+                // ヘッダ行の項目読込
                 var headerRow = sheet?.GetRow(decimal.ToInt32(NUD_HeaderRow.Value) - 1);
 
+                // ヘッダ行の項目をListBoxに追加
                 // Linqの遅延評価を終わらせるため最後にToArray()している
                 headerRow.Select(column => column?.ToString())
                          .Select(item => LB_Columns.Items.Add(item))
                          .ToArray();
-                btnConvert.Enabled = true;
 
                 // 開始行にヘッダ行の次の行をセット
                 NUD_StartRow.Value = NUD_HeaderRow.Value + 1;
                 // 終了行に最終行をセット
                 // sheet.LastRowNumは最終行-1が返るため
                 NUD_EndRow.Value = sheet.LastRowNum + 1;
+
+                // 実行ボタンを有効化
+                btnConvert.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -123,6 +138,12 @@ namespace Wide2Long
                 {
                     if (LB_Columns.GetSelected(i))
                     {
+                        // 最初の項目を選択した場合、拒否
+                        if (i == 0)
+                        {
+                            MessageBox.Show($"{LB_Columns.Items[i].ToString()}は最初の項目のため行に展開できません。", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
                         selectedItems.Add(new ColObject(i, LB_Columns.Items[i].ToString()));
                     }
                     else
@@ -154,14 +175,8 @@ namespace Wide2Long
                     // 待機カーソルに変更
                     Cursor.Current = Cursors.WaitCursor;
                     
-                    // 排他ロックせずに読み取り専用で開く
-                    var srcFs = new FileStream(TB_FilePath.Text, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-
-                    // Excelブックを読み込む
-                    IWorkbook srcWorkbook = WorkbookFactory.Create(srcFs);
-
-                    // 1シート目を取得
-                    var srcSheet = srcWorkbook?.GetSheetAt(0);
+                    // 処理対象のシートを取得
+                    ISheet srcSheet = this.srcWorkbook.GetSheetAt(this.sheetIndex);
 
                     var dstBook = new XSSFWorkbook();
                     var dstSheet = dstBook.CreateSheet("converted");
@@ -261,9 +276,6 @@ namespace Wide2Long
 
                                     // スタイルをコピー
                                     var srcCellStyle = srcCell.CellStyle;
-                                    //var dstCellStyle = dstBook.CreateCellStyle();
-                                    //dstCellStyle.DataFormat = srcCellStyle.DataFormat;
-                                    //dstCell.CellStyle = dstCellStyle;
                                     CellUtil.SetCellStyleProperty(dstCell, CellUtil.DATA_FORMAT, srcCellStyle.DataFormat);
                                 }
 
@@ -312,10 +324,6 @@ namespace Wide2Long
 
                                 // スタイルをコピー
                                 var srcValueStyle = srcValueCell.CellStyle;
-                                //var dstValueStyle = dstBook.CreateCellStyle();
-                                //dstValueStyle.DataFormat = srcValueStyle.DataFormat;
-                                //dstLastValueCell.CellStyle = dstValueStyle;
-
                                 CellUtil.SetCellStyleProperty(dstLastValueCell, CellUtil.DATA_FORMAT, srcValueStyle.DataFormat);
 
                                 rowNum++;
@@ -363,6 +371,27 @@ namespace Wide2Long
         private void NUD_EndRow_Click(object sender, EventArgs e)
         {
             NUD_EndRow.Select(0, int.MaxValue);
+        }
+
+        private void initializeControl()
+        {
+            NUD_HeaderRow.Value = 1;
+            LB_Columns.Items.Clear();
+            TB_NewKeyName.Clear();
+            TB_NewValueName.Clear();
+            NUD_StartRow.Value = 1;
+            NUD_EndRow.Value = 1;
+            btnConvert.Enabled = false;
+        }
+
+        private void updateLabelSheetNum()
+        {
+            LB_SheetNum.Text = $"{srcWorkbook.NumberOfSheets}シート中{this.sheetIndex + 1}シート目";
+        }
+
+        private void updateLabelSheetName()
+        {
+            LB_SheetName.Text = $"{srcWorkbook.GetSheetName(this.sheetIndex)}";
         }
     }
 
