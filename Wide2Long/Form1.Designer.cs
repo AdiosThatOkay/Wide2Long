@@ -317,14 +317,16 @@
             this.btnSkip.TabIndex = 3;
             this.btnSkip.Text = "このシートをスキップ";
             this.btnSkip.UseVisualStyleBackColor = true;
+            this.btnSkip.Click += new System.EventHandler(this.btnSkip_Click);
             // 
             // LB_SheetName
             // 
             this.LB_SheetName.AutoSize = true;
-            this.LB_SheetName.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LB_SheetName.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LB_SheetName.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.LB_SheetName.Location = new System.Drawing.Point(24, 108);
             this.LB_SheetName.Name = "LB_SheetName";
-            this.LB_SheetName.Size = new System.Drawing.Size(67, 20);
+            this.LB_SheetName.Size = new System.Drawing.Size(66, 20);
             this.LB_SheetName.TabIndex = 19;
             this.LB_SheetName.Text = "シート名:";
             // 
@@ -332,6 +334,7 @@
             // 
             this.LB_SheetNum.AutoSize = true;
             this.LB_SheetNum.Font = new System.Drawing.Font("メイリオ", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.LB_SheetNum.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.LB_SheetNum.Location = new System.Drawing.Point(146, 79);
             this.LB_SheetNum.Name = "LB_SheetNum";
             this.LB_SheetNum.Size = new System.Drawing.Size(100, 20);
