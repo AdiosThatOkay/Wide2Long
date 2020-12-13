@@ -44,35 +44,39 @@ namespace Wide2Long
                 {
                     filePath = ofd.FileName;
                     TB_FilePath.Text = filePath;
+
+                    // 待機カーソルに変更
+                    Cursor.Current = Cursors.WaitCursor;
+
+                    // 各コントロールを初期化
+                    initializeControl();
+
+                    // Excelブックを読み込む
+                    // 排他ロックせずに読み取り専用で開く
+                    using (var fs = new FileStream(TB_FilePath.Text, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        this.srcWorkbook = WorkbookFactory.Create(fs);
+                        this.sheetIndex = 0;
+                    }
+
+                    // 最初のシートを取得して、情報をラベルに表示
+                    updateLabelSheetNum();
+                    updateLabelSheetName();
+
+                    // スキップボタンと列名読込ボタンを有効化
+                    btnSkip.Enabled = true;
+                    btnLoad.Enabled = true;
                 }
             }
-
-            // 待機カーソルに変更
-            Cursor.Current = Cursors.WaitCursor;
-
-            // 各コントロールを初期化
-            initializeControl();
-
-            // Excelブックを読み込む
-            // 排他ロックせずに読み取り専用で開く
-            using (var fs = new FileStream(TB_FilePath.Text, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                this.srcWorkbook = WorkbookFactory.Create(fs);
-                this.sheetIndex = 0;
-            }
-
-            // 最初のシートを取得して、情報をラベルに表示
-            updateLabelSheetNum();
-            updateLabelSheetName();
-
-            // スキップボタンと列名読込ボタンを有効化
-            btnSkip.Enabled = true;
-            btnLoad.Enabled = true;
         }
 
         private void btnExit_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            DialogResult dialog = MessageBox.Show("終了すると、途中まで変換したデータが失われます。\r\nよろしいですか？", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+            if (dialog == DialogResult.OK)
+            {
+                Application.Exit();
+            }
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
@@ -97,7 +101,7 @@ namespace Wide2Long
 
                 // ヘッダ行の項目をListBoxに追加
                 // Linqの遅延評価を終わらせるため最後にToArray()している
-                headerRow.Select(column => column?.ToString())
+                headerRow.Select(column => sanitize(column?.ToString()))
                          .Select(item => LB_Columns.Items.Add(item))
                          .ToArray();
 
@@ -218,7 +222,7 @@ namespace Wide2Long
 
                 rowNum++;
 
-                // 4行目以降を出力
+                // 変換後のデータを出力
                 for (int sr = startRow; sr < endRow + 1; sr++)
                 {
                     var srcRow = srcSheet.GetRow(sr);
@@ -246,7 +250,7 @@ namespace Wide2Long
                             switch (srcCell.CellType)
                             {
                                 case CellType.String:
-                                    dstCell.SetCellValue(srcCell.ToString());
+                                    dstCell.SetCellValue(sanitize(srcCell.ToString()));
                                     break;
                                 case CellType.Numeric:
                                     if (DateUtil.IsCellDateFormatted(srcCell))
@@ -262,7 +266,7 @@ namespace Wide2Long
                                     dstCell.SetCellValue(srcCell.BooleanCellValue);
                                     break;
                                 default:
-                                    dstCell.SetCellValue(srcCell.ToString());
+                                    dstCell.SetCellValue(sanitize(srcCell.ToString()));
                                     break;
                             }
                             // CellTypeをコピー
@@ -288,7 +292,7 @@ namespace Wide2Long
                         {
                             // 文字列
                             case CellType.String:
-                                dstLastValueCell.SetCellValue(srcValueCell.ToString());
+                                dstLastValueCell.SetCellValue(sanitize(srcValueCell.ToString()));
                                 break;
                             // 数値・通貨
                             case CellType.Numeric:
@@ -308,7 +312,7 @@ namespace Wide2Long
                                 break;
                             // そのほかは文字列型とみなす
                             default:
-                                dstLastValueCell.SetCellValue(srcValueCell.ToString());
+                                dstLastValueCell.SetCellValue(sanitize(srcValueCell.ToString()));
                                 break;
 
                         }
