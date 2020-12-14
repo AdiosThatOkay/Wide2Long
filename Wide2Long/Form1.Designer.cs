@@ -347,7 +347,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(467, 695);
             this.Controls.Add(this.LB_SheetNum);
-            this.Controls.Add(this.LB_SheetName);
             this.Controls.Add(this.btnSkip);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.TB_NewValueName);
@@ -369,6 +368,7 @@
             this.Controls.Add(this.btnOpenDialog);
             this.Controls.Add(this.TB_FilePath);
             this.Controls.Add(this.label1);
+            this.Controls.Add(this.LB_SheetName);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";

@@ -126,9 +126,9 @@ namespace Wide2Long
             int startRow = decimal.ToInt32(NUD_StartRow.Value) - 1;
             int endRow = decimal.ToInt32(NUD_EndRow.Value) - 1;
 
-            if (!(headerRow < startRow && startRow <= endRow && headerRow >= 1))
+            if (!(headerRow < startRow && startRow <= endRow && headerRow >= 0))
             {
-                MessageBox.Show("開始行と終了行を正しく指定してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("ヘッダ行 < 開始行 <= 終了行としてください。", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -227,13 +227,8 @@ namespace Wide2Long
                 {
                     var srcRow = srcSheet.GetRow(sr);
 
-                    // srcRowがnullの場合無視して次の行へ
-                    if (srcRow == null)
-                    {
-                        continue;
-                    }
-                    // srcRowがすべて空欄の場合も無視して次の行へ
-                    else if (srcRow.Cells.All(c => c.CellType == CellType.Blank))
+                    // srcRowがnullの場合、またはsrcRowがすべて空欄の場合、無視して次の行へ
+                    if (srcRow == null || srcRow.Cells.All(c => c.CellType == CellType.Blank))
                     {
                         continue;
                     }
@@ -247,12 +242,17 @@ namespace Wide2Long
                         {
                             var srcCell = srcRow.GetCell(unselectedItems[c].originalColumnNumber);
                             var dstCell = dstRow.CreateCell(c);
+
+                            // コピー元のCellType（文字列とか数値とか）による分類
                             switch (srcCell.CellType)
                             {
+                                // 文字列
                                 case CellType.String:
                                     dstCell.SetCellValue(sanitize(srcCell.ToString()));
                                     break;
+                                // 数値・通貨
                                 case CellType.Numeric:
+                                    // 日付を含むことがある
                                     if (DateUtil.IsCellDateFormatted(srcCell))
                                     {
                                         dstCell.SetCellValue(srcCell.DateCellValue);
@@ -262,9 +262,11 @@ namespace Wide2Long
                                         dstCell.SetCellValue(srcCell.NumericCellValue);
                                     }
                                     break;
+                                // 真偽値
                                 case CellType.Boolean:
                                     dstCell.SetCellValue(srcCell.BooleanCellValue);
                                     break;
+                                // そのほかは文字列型とみなす
                                 default:
                                     dstCell.SetCellValue(sanitize(srcCell.ToString()));
                                     break;
