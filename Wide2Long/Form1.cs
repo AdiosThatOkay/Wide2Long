@@ -233,7 +233,8 @@ namespace Wide2Long
                         continue;
                     }
 
-                    for (int dr = 0; dr < selectedItems.Count; dr++)
+                    // ListBoxで選択したアイテムの数だけループを回す
+                    for (int idx = 0; idx < selectedItems.Count; idx++)
                     {
                         var dstRow = dstSheet.CreateRow(rowNum);
 
@@ -243,88 +244,20 @@ namespace Wide2Long
                             var srcCell = srcRow.GetCell(unselectedItems[c].originalColumnNumber);
                             var dstCell = dstRow.CreateCell(c);
 
-                            // コピー元のCellType（文字列とか数値とか）による分類
-                            switch (srcCell.CellType)
-                            {
-                                // 文字列
-                                case CellType.String:
-                                    dstCell.SetCellValue(sanitize(srcCell.ToString()));
-                                    break;
-                                // 数値・通貨
-                                case CellType.Numeric:
-                                    // 日付を含むことがある
-                                    if (DateUtil.IsCellDateFormatted(srcCell))
-                                    {
-                                        dstCell.SetCellValue(srcCell.DateCellValue);
-                                    }
-                                    else
-                                    {
-                                        dstCell.SetCellValue(srcCell.NumericCellValue);
-                                    }
-                                    break;
-                                // 真偽値
-                                case CellType.Boolean:
-                                    dstCell.SetCellValue(srcCell.BooleanCellValue);
-                                    break;
-                                // そのほかは文字列型とみなす
-                                default:
-                                    dstCell.SetCellValue(sanitize(srcCell.ToString()));
-                                    break;
-                            }
-                            // CellTypeをコピー
-                            dstCell.SetCellType(srcCell.CellType);
-
-                            // スタイルをコピー
-                            var srcCellStyle = srcCell.CellStyle;
-                            CellUtil.SetCellStyleProperty(dstCell, CellUtil.DATA_FORMAT, srcCellStyle.DataFormat);
+                            copyDataAndFormat(srcCell, dstCell);
                         }
 
                         // 行に展開する部分のデータをコピー
                         // キー
-                        var dstLastColl = dstRow.LastCellNum;
-                        var dstLastKeyCell = dstRow.CreateCell(dstLastColl);
-                        dstLastKeyCell.SetCellValue(selectedItems[dr].name);
+                        var dstKeyCol = dstRow.LastCellNum;
+                        var dstKeyCell = dstRow.CreateCell(dstKeyCol);
+                        dstKeyCell.SetCellValue(selectedItems[idx].name);
 
                         // 値
-                        var srcValueCell = srcRow.GetCell(selectedItems[dr].originalColumnNumber);
-                        var dstLastValueCell = dstRow.CreateCell(dstLastColl + 1);
+                        var srcValueCell = srcRow.GetCell(selectedItems[idx].originalColumnNumber);
+                        var dstValueCell = dstRow.CreateCell(dstKeyCol + 1);
 
-                        // コピー元のCellType（文字列とか数値とか）による分類
-                        switch (srcValueCell.CellType)
-                        {
-                            // 文字列
-                            case CellType.String:
-                                dstLastValueCell.SetCellValue(sanitize(srcValueCell.ToString()));
-                                break;
-                            // 数値・通貨
-                            case CellType.Numeric:
-                                // 日付を含むことがある
-                                if (DateUtil.IsCellDateFormatted(srcValueCell))
-                                {
-                                    dstLastValueCell.SetCellValue(srcValueCell.DateCellValue);
-                                }
-                                else
-                                {
-                                    dstLastValueCell.SetCellValue(srcValueCell.NumericCellValue);
-                                }
-                                break;
-                            // 真偽値
-                            case CellType.Boolean:
-                                dstLastValueCell.SetCellValue(srcValueCell.BooleanCellValue);
-                                break;
-                            // そのほかは文字列型とみなす
-                            default:
-                                dstLastValueCell.SetCellValue(sanitize(srcValueCell.ToString()));
-                                break;
-
-                        }
-
-                        // CellTypeをコピー
-                        dstLastValueCell.SetCellType(srcValueCell.CellType);
-
-                        // スタイルをコピー
-                        var srcValueStyle = srcValueCell.CellStyle;
-                        CellUtil.SetCellStyleProperty(dstLastValueCell, CellUtil.DATA_FORMAT, srcValueStyle.DataFormat);
+                        copyDataAndFormat(srcValueCell, dstValueCell);
 
                         rowNum++;
                     }
@@ -479,6 +412,44 @@ namespace Wide2Long
                 formReset();
                 return;
             }
+        }
+
+        private void copyDataAndFormat(ICell srcCell, ICell dstCell)
+        {
+            // コピー元のCellType（文字列とか数値とか）による分類
+            switch (srcCell.CellType)
+            {
+                // 文字列
+                case CellType.String:
+                    dstCell.SetCellValue(sanitize(srcCell.ToString()));
+                    break;
+                // 数値・通貨
+                case CellType.Numeric:
+                    // 日付を含むことがある
+                    if (DateUtil.IsCellDateFormatted(srcCell))
+                    {
+                        dstCell.SetCellValue(srcCell.DateCellValue);
+                    }
+                    else
+                    {
+                        dstCell.SetCellValue(srcCell.NumericCellValue);
+                    }
+                    break;
+                // 真偽値
+                case CellType.Boolean:
+                    dstCell.SetCellValue(srcCell.BooleanCellValue);
+                    break;
+                // そのほかは文字列型とみなす
+                default:
+                    dstCell.SetCellValue(sanitize(srcCell.ToString()));
+                    break;
+            }
+            // CellTypeをコピー
+            dstCell.SetCellType(srcCell.CellType);
+
+            // スタイルをコピー
+            var srcCellStyle = srcCell.CellStyle;
+            CellUtil.SetCellStyleProperty(dstCell, CellUtil.DATA_FORMAT, srcCellStyle.DataFormat);
         }
 
         private void saveWorkbook(string fileName)
