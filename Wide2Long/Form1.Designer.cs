@@ -372,7 +372,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Wide2Long (Ver 0.4.1)";
+            this.Text = "Wide2Long (Ver 0.4.2)";
             ((System.ComponentModel.ISupportInitialize)(this.NUD_HeaderRow)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUD_StartRow)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.NUD_EndRow)).EndInit();
