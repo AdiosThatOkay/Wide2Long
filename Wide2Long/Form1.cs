@@ -138,8 +138,8 @@ namespace Wide2Long
                 return;
             }
 
-            List<ColObject> selectedItems = new List<ColObject>();
-            List<ColObject> unselectedItems = new List<ColObject>();
+            List<ColData> selectedItems = new List<ColData>();
+            List<ColData> unselectedItems = new List<ColData>();
 
             // ListBoxで選択したものと選択しなかったものに分ける
             // 前提
@@ -156,7 +156,7 @@ namespace Wide2Long
                         MessageBox.Show($"{LB_Columns.Items[i].ToString()}は最初の項目のため行に展開できません。", "", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
-                    selectedItems.Add(new ColObject(i, LB_Columns.Items[i].ToString()));
+                    selectedItems.Add(new ColData(i, LB_Columns.Items[i].ToString()));
                 }
                 else
                 {
@@ -164,7 +164,7 @@ namespace Wide2Long
                     // インデックスが連続していない場合、これ以降は処理しない
                     if (i == 0 || unselectedItems.Last().originalColumnNumber + 1 == i)
                     {
-                        unselectedItems.Add(new ColObject(i, LB_Columns.Items[i].ToString()));
+                        unselectedItems.Add(new ColData(i, LB_Columns.Items[i].ToString()));
                     }
                     else
                     {
@@ -353,11 +353,7 @@ namespace Wide2Long
 
                     if (sfd.ShowDialog() == DialogResult.OK)
                     {
-                        using (var fs = File.Create(sfd.FileName))
-                        {
-                            dstWorkbook.Write(fs);
-                            MessageBox.Show("変換後のブックを保存しました。\r\n続けて他のブックを変換できます。", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
+                        saveWorkbook(sfd.FileName);
                     }
                     else
                     {
@@ -474,11 +470,7 @@ namespace Wide2Long
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    using (var fs = File.Create(sfd.FileName))
-                    {
-                        dstWorkbook.Write(fs);
-                        MessageBox.Show("変換後のブックを保存しました。\r\n続けて他のブックを変換できます。", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    saveWorkbook(sfd.FileName);
                 }
                 else
                 {
@@ -489,17 +481,37 @@ namespace Wide2Long
             }
         }
 
+        private void saveWorkbook(string fileName)
+        {
+            try
+            {
+                using (var fs = File.Create(fileName))
+                {
+                    this.dstWorkbook.Write(fs);
+                    MessageBox.Show("変換後のブックを保存しました。\r\n続けて他のブックを変換できます。", "", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("変換後のファイルと同じ名前のファイルを別プロセスで開いているため、保存に失敗しました。\r\n最初からやり直してください。", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         private string sanitize(string rawString)
         {
             return new string(rawString.Where(c => !char.IsControl(c)).ToArray());
         }
     }
 
-    internal class ColObject
+    internal class ColData
     {
         public int originalColumnNumber { get; set; }
         public string name { get; set; }
-        public ColObject(int originalColumnNumber, string name)
+        public ColData(int originalColumnNumber, string name)
         {
             this.originalColumnNumber = originalColumnNumber;
             this.name = name;
